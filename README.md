@@ -1,111 +1,104 @@
-# 1. Import all necessary libraries
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+Data Cleaning, Feature Engineering & Visualization using Pandas • NumPy • Matplotlib • Seaborn
 
-# Set the style for seaborn plots
-sns.set_style("darkgrid")
-# Set a larger default figure size for better visibility
-plt.rcParams['figure.figsize'] = (10, 6)
+This project performs a complete Exploratory Data Analysis (EDA) on the classic Automobile MPG dataset.
+It showcases essential data-science skills including:
 
-## --- 2. Data Loading ---
-print("--- 2. Data Loading & Initial Inspection ---")
+✔ Data loading
+✔ Data cleaning
+✔ Handling missing values
+✔ Feature engineering
+✔ Visual analysis
+✔ Statistical summarization
 
-# Load the MPG dataset directly from Seaborn for convenience
-try:
-    df = sns.load_dataset('mpg')
-except ValueError:
-    print("Could not load the MPG dataset from Seaborn. Please ensure Seaborn is installed.")
-    exit()
+📁 Project Structure
+├── mpg_analysis.py       # Main Python script
+├── weather_data.csv      # (Only if you add your file)
+├── README.md             # Project documentation
 
-print(f"Dataset loaded with {len(df)} rows and {len(df.columns)} columns.")
-print("\nData Info:")
-df.info()
+🔧 Technologies Used
 
-## --- 3. Data Preprocessing (Pandas & NumPy) ---
-print("\n--- 3. Data Cleaning and Feature Creation ---")
+Python 3.x
 
-# a) Handle Missing Values (Horsepower)
-# The 'horsepower' column has some missing values; we'll fill them with the median.
-# Use NumPy's median calculation within Pandas:
-hp_median = np.median(df['horsepower'].dropna())
-df['horsepower'].fillna(hp_median, inplace=True)
-print(f"Missing horsepower values filled with the median: {hp_median:.2f}")
+Pandas – Data manipulation
 
-# b) Create a Categorical Feature (Weight Category)
-# Use NumPy's digitize to assign numerical values to bins, then map to categories.
-weight_bins = [0, 2000, 3000, 4000, np.inf]
-weight_labels = ['Light', 'Medium', 'Heavy', 'Very Heavy']
-df['weight_category'] = pd.cut(df['weight'], bins=weight_bins, labels=weight_labels, right=False)
+NumPy – Numerical operations
 
-# c) Drop columns not needed for analysis (e.g., 'name')
-df.drop('name', axis=1, inplace=True)
+Matplotlib – Plotting
 
-print("\nData after cleaning and feature creation:")
-print(df.head())
+Seaborn – Statistical visualizations
 
-## --- 4. Exploratory Data Analysis (Visualization) ---
-print("\n--- 4. Exploratory Data Analysis & Visualization ---")
+📊 Key Features
+1. Data Loading
 
-# A. Distribution of MPG (Matplotlib Histogram and Seaborn KDE)
-plt.figure(figsize=(10, 6))
-# Seaborn Histplot provides both the histogram and the smooth KDE line
-sns.histplot(df['mpg'], bins=15, kde=True, color='teal', edgecolor='black')
-plt.title('A. Distribution of Miles Per Gallon (MPG)')
-plt.xlabel('MPG (Miles Per Gallon)')
-plt.ylabel('Frequency')
-plt.show()
+Loads the MPG dataset directly from Seaborn.
 
-# B. MPG vs. Weight (Seaborn Scatter Plot)
-plt.figure(figsize=(10, 6))
-# Use 'origin' as the hue to see the effect of country of origin
-sns.scatterplot(
-    x='weight', 
-    y='mpg', 
-    hue='origin', 
-    size='horsepower', # Use horsepower to adjust the size of the marker
-    data=df, 
-    palette='magma', 
-    sizes=(20, 300)
-)
-plt.title('B. MPG vs. Vehicle Weight, Colored by Origin')
-plt.xlabel('Weight (lbs)')
-plt.ylabel('MPG')
-plt.legend(title='Origin', loc='upper right')
-plt.show()
+2. Data Cleaning
 
-# C. MPG Distribution by Country of Origin (Seaborn Box Plot)
-plt.figure(figsize=(8, 6))
-sns.boxplot(x='origin', y='mpg', data=df, palette='viridis')
-plt.title('C. MPG Distribution by Country of Origin')
-plt.xlabel('Country of Origin')
-plt.ylabel('MPG')
-plt.show()
+Handles missing values using median imputation (NumPy).
 
-# D. Pairwise Relationship (Seaborn PairPlot - focuses on key numerical columns)
-# This plot generates a grid of scatter plots for all numerical combinations,
-# and histograms/KDEs on the diagonal. It is a powerful EDA tool.
-numerical_cols = ['mpg', 'displacement', 'horsepower', 'weight']
-sns.pairplot(df[numerical_cols], diag_kind='kde')
-plt.suptitle('D. Pairwise Relationships (MPG, Displacement, Horsepower, Weight)', y=1.02)
-plt.show()
+Drops unused fields.
 
-# E. MPG of Cylinders (Pandas Groupby & Matplotlib Bar Chart)
-# Use Pandas to calculate the mean MPG for each cylinder count
-avg_mpg_by_cyl = df.groupby('cylinders')['mpg'].mean().sort_values(ascending=False)
-plt.figure(figsize=(8, 5))
-avg_mpg_by_cyl.plot(kind='bar', color=plt.cm.coolwarm(np.linspace(0, 1, len(avg_mpg_by_cyl))))
-plt.title('E. Average MPG by Number of Cylinders')
-plt.xlabel('Number of Cylinders')
-plt.ylabel('Average MPG')
-plt.xticks(rotation=0)
-plt.show()
+Inspects dataset structure and summary.
 
-## --- 5. Key Findings (Derived from Pandas & NumPy) ---
-print("\n--- 5. Key Numerical Findings ---")
+3. Feature Engineering
 
-# Pandas Groupby for aggregated statistics
-stats_by_origin = df.groupby('origin')['mpg'].agg(['mean', 'median', 'std', np.min, np.max])
-print("MPG Statistical Summary by Country of Origin (Pandas):\n", stats_by_origin.to_string())
+Creates a new categorical column: Weight Category
+(Light, Medium, Heavy, Very Heavy)
 
+4. Data Visualization
+
+Includes multiple high-quality visualizations:
+
+Histogram + KDE of MPG
+
+Scatter plot of MPG vs Weight
+
+Box plot of MPG by origin
+
+PairPlot of major numerical features
+
+Bar chart of MPG by cylinder count
+
+5. Statistical Summary
+
+Generates descriptive stats grouped by country of origin, including:
+mean, median, std, min, max.
+
+📈 Sample Insights
+
+Lighter vehicles tend to have higher fuel efficiency.
+
+Cars from different regions show unique MPG patterns.
+
+Displacement, horsepower, and weight strongly correlate with MPG.
+
+🚀 How to Run This Project
+1. Clone the repository
+git clone https://github.com/jaswanthkumar-06
+
+2. Install dependencies
+pip install pandas numpy matplotlib seaborn
+
+3. Run the script
+python mpg_analysis.py
+
+📚 Learnings from the Project
+
+By completing this analysis, you gain experience in:
+
+Data wrangling with Pandas
+
+Working with missing values
+
+Applying NumPy for numerical preprocessing
+
+Visual storytelling using Matplotlib & Seaborn
+
+Exploratory data analysis workflows
+
+Building a clean and readable Python script
+
+🤝 Contributions
+
+Pull requests are welcome!
+Feel free to fork the repo and enhance the analysis or add new visualizations.
